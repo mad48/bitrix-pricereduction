@@ -1,0 +1,4 @@
+<?php
+$MESS['PRICE_REDUCTION_PRODUCT_ID'] = 'ID продукта';
+$MESS['PRICE_REDUCTION_BUTTON_ID'] = 'ID кнопки';
+$MESS['PRICE_REDUCTION_BUTTON_CLASS'] = 'CSS стиль кнопки';
