@@ -1,3 +1,3 @@
 <?php
-$MESS['MODULE_UNINSTALL_SAVE_USERDATA']  = "Сохранить данные модуля в БД?";
+$MESS['MOD_UNINST_SAVE_TABLES']  = "Сохранить данные модуля в БД?";
 

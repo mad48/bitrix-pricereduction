@@ -495,3 +495,102 @@ if (is_array($mxResult)) {
     }
 }
 }*/
+
+
+
+
+
+
+
+
+
+
+//$product = \CCatalogProduct::GetByID($product_id);
+
+/*        $old_price = \CPrice::GetList(
+            [],
+            [
+                "ID" => $PRICE_ID
+            ]
+        )->fetch()['PRICE'];*/
+
+
+
+
+
+
+
+
+//use \Bitrix\Highloadblock\HighloadBlockTable;
+//use \Bitrix\Main\Config\Option;
+//use \Bitrix\Main\Mail\Event as MailEvent;
+//use \Bitrix\Main\Event;
+
+//CModule::IncludeModule('highloadblock');
+
+
+/*
+                                              $PRICE_ID = 1;
+                                              $arFields = array
+                                              (
+                                                  "EXTRA_ID" => "",
+                                                  "PRODUCT_ID" => 42,
+                                                  "CATALOG_GROUP_ID" => 1,
+                                                  "PRICE" => 2002,
+                                                  "CURRENCY" => "RUB",
+                                                  "QUANTITY_FROM" => "",
+                                                  "QUANTITY_TO" => "",
+                                                  "RECALC> "",
+                                                  "PRICE_SCALE" => 2002
+                                              );
+                      /*
+
+                                         \MadSoft\PriceReduction::beforePriceUpdate($PRICE_ID, $arFields);*/
+
+// Создание события
+// $event = new Event("mymodule", "OnCatalogElementsImport", array('test_string'));
+
+// Вызов события
+// $event->send();
+
+// Обработка результатов вызова
+/*            if ($event->getResults()) {
+                echo 'Параметры, возвращенные из обработчика';
+
+
+                foreach ($event->getResults() as $eventResult) {
+                    echo "<pre style=\"display:block;\">";
+                    print_r($eventResult->getParameters());
+                    echo "</pre>";
+                }
+            }*/
+
+
+
+
+
+
+/*    public static function beforeDelete($Id)
+    {
+        $handler = self::getInstance();
+        $handler->doSomething();
+        $handler->doSomethingElse();
+
+        return $Id;
+    }
+
+
+    protected function doSomething()
+    {
+        //do something
+    }
+
+    protected function doSomethingElse()
+    {
+        //do something else
+    }
+
+    public static function doSometh()
+    {
+        echo "doSometh";
+    }*/

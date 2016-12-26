@@ -10,10 +10,10 @@ Loc::loadMessages(__FILE__);
 //if (class_exists("dev_module")) return;
 // имя класса строчными и без точек иначе может глючить
 
-Class price_reduction extends CModule
+Class madsoft_pricereduction extends \CModule
 {
 
-    var $MODULE_ID = "pricereduction";
+    var $MODULE_ID = "madsoft.pricereduction";
 
     /** @var string */
     var $MODULE_VERSION;
@@ -84,6 +84,10 @@ Class price_reduction extends CModule
 
             $this->InstallDB();
             $this->InstallEvents();
+
+            $this->createMailEventType();
+            $this->createMailEventTemplate();
+
             $this->InstallFiles();
 
         } else {
@@ -102,7 +106,7 @@ Class price_reduction extends CModule
     {
         global $APPLICATION;
 
-        $request = Application::getInstance()->getContext()->getRequest();
+        $request = Bitrix\Main\Application::getInstance()->getContext()->getRequest();
 
         if ($request["step"] < 2) {
 
@@ -111,6 +115,10 @@ Class price_reduction extends CModule
         } elseif ($request["step"] == 2) {
 
             $this->UnInstallEvents();
+
+            $this->deleteMailEventType();
+            $this->deleteMailEventTemplate();
+
             $this->UnInstallFiles();
 
 
@@ -152,18 +160,18 @@ Class price_reduction extends CModule
 
     function UnInstallFiles()
     {
-        return;
-        Bitrix\Main\IO\Directory::deleteDirectory($_SERVER["DOCUMENT_ROOT"] . "/bitrix/components/mad/");
+
+        Bitrix\Main\IO\Directory::deleteDirectory($_SERVER["DOCUMENT_ROOT"] . "/bitrix/components/madsoft/");
 
         if (\Bitrix\Main\IO\Directory::isDirectoryExists($path = $this->GetPath() . "/admin")) {
-            //DeleteDirFiles($this->GetPath() . "/install/admin", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/", true, true);
+            DeleteDirFiles($this->GetPath() . "/install/admin", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/", true, true);
 
 
             if ($dir = opendir($path)) {
                 while (false !== $item = readdir($dir)) {
                     if (in_array($item, $this->excludeFiles)) {
                         continue;
-                        //\Bitrix\Main\IO\Directory::deleteFile($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/" . MODULE_ID . "_" . $item);
+                        \Bitrix\Main\IO\Directory::deleteFile($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/" . MODULE_ID . "_" . $item);
 
                     }
                 }
@@ -188,8 +196,6 @@ Class price_reduction extends CModule
     function InstallDB()
     {
         $this->createHiloadBlock();
-        $this->createMailEventType();
-        $this->createMailEventTemplate();
 
         return true;
     }
@@ -198,8 +204,6 @@ Class price_reduction extends CModule
     function UnInstallDB()
     {
         $this->deleteHiloadBlock();
-        //$this->deleteMailEventType();
-        //$this->deleteMailEventTemplate();
 
         return true;
     }
@@ -209,13 +213,13 @@ Class price_reduction extends CModule
     {
         $eventManager = \Bitrix\Main\EventManager::getInstance();
 
-        //$handlers = $eventManager->findEventHandlers("catalog", "onPriceUpdate");
+        //print_r($eventManager->findEventHandlers("catalog", "onPriceUpdate"));
 
 
         $eventManager->registerEventHandler(
             'catalog',
             'onPriceUpdate',
-            'pricereduction',
+            'madsoft.pricereduction',
             '\MadSoft\PriceReduction\Lib\Handler', 'onPriceUpdate');
 
         return true;
@@ -229,7 +233,7 @@ Class price_reduction extends CModule
         $eventManager->unRegisterEventHandler(
             'catalog',
             'onPriceUpdate',
-            'pricereduction',
+            'madsoft.pricereduction',
             '\MadSoft\PriceReduction\Lib\Handler', 'onPriceUpdate');
 
         return true;
@@ -245,6 +249,8 @@ Class price_reduction extends CModule
      */
     public function deleteHiloadBlock($hlblock = "PriceReduction")
     {
+        \Bitrix\Main\Loader::includeModule('highloadblock');
+
         $hlblock_delete_result = false;
 
         if (!empty($hlblock)) {
@@ -275,22 +281,20 @@ Class price_reduction extends CModule
         //CModule::IncludeModule('highloadblock');
         \Bitrix\Main\Loader::includeModule('highloadblock');
 
-        self::deleteHiloadBlock("PriceReduction");
-
         $hltable_name = [
             'NAME' => "PriceReduction",
             'TABLE_NAME' => "pricereduction"
         ];
 
 
-        $hlblock_create_result = HighloadBlockTable::add($hltable_name);
+        $hlblock_create_result = \Bitrix\Highloadblock\HighloadBlockTable::add($hltable_name);
 
         if ($hlblock_create_result->isSuccess()) {
             $hblock_id = $hlblock_create_result->getId();
 
-            Option::set("mad", "hblock_id", $hblock_id);
+            \Bitrix\Main\Config\Option::set("mad", "hblock_id", $hblock_id);
 
-            $oUserTypeEntity = new CUserTypeEntity();
+            $oUserTypeEntity = new \CUserTypeEntity();
             $email_field = array(
                 'ENTITY_ID' => 'HLBLOCK_' . $hblock_id,
                 'FIELD_NAME' => 'UF_EMAIL',
@@ -352,12 +356,7 @@ Class price_reduction extends CModule
     public function createMailEventType()
     {
 
-        $event_type = new CEventType;
-
-        if (!$event_type->Delete("PRICE_REDUCTION")) {
-            echo Loc::getMessage("DELETE_ERROR");
-        }
-
+        $event_type = new \CEventType;
 
         $mail_event_params = [
             "LID" => "ru",
@@ -373,7 +372,7 @@ Class price_reduction extends CModule
         $mail_event_id = $event_type->Add($mail_event_params);
 
         if ($mail_event_id) {
-            Option::set("mad", "mail_event_id", $mail_event_id);
+            \Bitrix\Main\Config\Option::set("mad", "mail_event_id", $mail_event_id);
         }
 
         // echo "<pre>";
@@ -381,25 +380,28 @@ Class price_reduction extends CModule
         // echo "</pre>";
     }
 
+    public function deleteMailEventType()
+    {
+
+        $event_type = new \CEventType;
+
+        if (!$event_type->Delete("PRICE_REDUCTION")) {
+            echo Loc::getMessage("DELETE_ERROR");
+        }
+
+    }
 
     //Настройки > Настройки продукта > Почтовые события > Почтовые шаблоны
 
     public function createMailEventTemplate()
     {
 
-        $event_message = new CEventMessage;
-
-        $old_mail_template_id = Option::get("mad", "mail_template_id");
-        if ($old_mail_template_id) {
-            if (!$event_message->Delete($old_mail_template_id)) {
-                echo Loc::getMessage("DELETE_ERROR");
-            }
-        }
+        $event_message = new \CEventMessage;
 
         $mail_template_params = [
             "ACTIVE" => "Y",
             "EVENT_NAME" => "PRICE_REDUCTION",
-            "LID" => SITE_ID,
+            "LID" => "s1",
             "EMAIL_FROM" => "#SALE_EMAIL#",
             "EMAIL_TO" => "#EMAIL#",
             "BCC" => "#BCC#",
@@ -416,13 +418,33 @@ Class price_reduction extends CModule
         $mail_template_id = $event_message->Add($mail_template_params);
 
         if ($mail_template_id) {
-            Option::set("mad", "mail_template_id", $mail_template_id);
+            \Bitrix\Main\Config\Option::set("mad", "mail_template_id", $mail_template_id);
         }
 
 //        echo "<pre>";
 //        print_r($event_message);
 //        echo "</pre>";
 
+    }
+
+    public function deleteMailEventTemplate()
+    {
+
+        $event_message = new \CEventMessage;
+
+        //$old_mail_template_id = \Bitrix\Main\Config\Option::get("mad", "mail_template_id");
+
+        $old_mail_template_id = $event_message::GetList(
+            $by = "site_id",
+            $order = "desc",
+            ["TYPE_ID" => "PRICE_REDUCTION"]
+        )->fetch()["ID"];
+
+        if ($old_mail_template_id) {
+            if (!$event_message->Delete($old_mail_template_id)) {
+                echo Loc::getMessage("DELETE_ERROR");
+            }
+        }
     }
 
 

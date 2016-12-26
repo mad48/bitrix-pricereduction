@@ -8,6 +8,6 @@ $MESS['PARTNER_URI']  = 'http://madcms.ru';
 
 $MESS['BITRIX_VERSION_INCOMPATIBLE']  = 'Необходима версия Битрикс 14.0 или более поздняя';
 
-$MESS['MODULE_INSTALL_TITLE']  = 'Установка модуля price_reduction';
-$MESS['MODULE_UNINSTALL_TITLE']  = 'Удаление модуля price_reduction';
+$MESS['MODULE_INSTALL_TITLE']  = 'Установка модуля PriceReduction';
+$MESS['MODULE_UNINSTALL_TITLE']  = 'Удаление модуля PriceReduction';
 

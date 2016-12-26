@@ -41,16 +41,16 @@ class PriceReduction extends \CBitrixComponent
 
         global $USER;
 
-        $params['HBLOCK_ID'] = isset($params['HBLOCK_ID']) ? (int)$params['HBLOCK_ID'] : 0;
+/*        $params['HBLOCK_ID'] = isset($params['HBLOCK_ID']) ? (int)$params['HBLOCK_ID'] : 0;
         $params['PRODUCT_ID'] = isset($params['PRODUCT_ID']) ? (int)$params['PRODUCT_ID'] : 0;
-        $params['BUTTON_ID'] = isset($params['BUTTON_ID']) ? (string)$params['BUTTON_ID'] : '';
+        $params['BUTTON_ID'] = isset($params['BUTTON_ID']) ? (string)$params['BUTTON_ID'] : '';*/
         $params['BUTTON_CLASS'] = isset($params['BUTTON_CLASS']) ? (string)$params['BUTTON_CLASS'] : '';
         $params['DEFAULT_DISPLAY'] = isset($params['DEFAULT_DISPLAY']) ? (bool)$params['DEFAULT_DISPLAY'] : true;
 
-        if (!$params['PRODUCT_ID'])
+/*        if (!$params['PRODUCT_ID'])
             $this->errors[] = Loc::getMessage('CPS_REQUIRED_PARAMETER', array('#PARAM#' => 'PRODUCT_ID'));
         if (!$params['BUTTON_ID'])
-            $this->errors[] = Loc::getMessage('CPS_REQUIRED_PARAMETER', array('#PARAM#' => 'BUTTON_ID'));
+            $this->errors[] = Loc::getMessage('CPS_REQUIRED_PARAMETER', array('#PARAM#' => 'BUTTON_ID'));*/
 
         if (!$_SESSION['PRICE_REDUCTION_EMAIL']) {
             $params['PRICE_REDUCTION_EMAIL'] = !empty($USER->getEmail()) ? $USER->getEmail() : '';
@@ -70,11 +70,10 @@ class PriceReduction extends \CBitrixComponent
         if ($this->errors)
             throw new SystemException(current($this->errors));
 
-
-        $this->arResult['HBLOCK_ID'] = $this->arParams['HBLOCK_ID'];
+/*        $this->arResult['HBLOCK_ID'] = $this->arParams['HBLOCK_ID'];
         $this->arResult['PRODUCT_ID'] = $this->arParams['PRODUCT_ID'];
+        $this->arResult['BUTTON_ID'] = $this->arParams['BUTTON_ID'];*/
         $this->arResult['BUTTON_CLASS'] = $this->arParams['BUTTON_CLASS'];
-        $this->arResult['BUTTON_ID'] = $this->arParams['BUTTON_ID'];
         $this->arResult['DEFAULT_DISPLAY'] = $this->arParams['DEFAULT_DISPLAY'];
         $this->arResult['PRICE_REDUCTION_EMAIL'] = $this->arParams['PRICE_REDUCTION_EMAIL'];
 
@@ -101,24 +100,11 @@ class PriceReduction extends \CBitrixComponent
             $this->checkModules();
             $this->formatResult();
 
-
-            //\MadSoft\PriceReduction\Lib\Handler::doSometh();
-
-
-            //$this->createHiloadBlock();
-//            $this->createMailEventType();
-//            $this->createMailEventTemplate();
-//            $this->sendMailEvent();
-
-            //$this->deleteHiloadBlock("PriceRedu5ction");
-
-
             $this->includeComponentTemplate();
 
         } catch (SystemException $e) {
             ShowError($e->getMessage());
         }
     }
-
 
 }

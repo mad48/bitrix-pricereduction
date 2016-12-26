@@ -20,7 +20,7 @@ $arComponentDescription = array(
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
 $arComponentDescription = array(
-    "NAME" => 'mad: Подписка на снижение цены',
+    "NAME" => 'Подписка на снижение цены товара',
     "DESCRIPTION" => 'Подписка на снижение цены',
     "ICON" => "/images/logo.gif",
     "CACHE_PATH" => "Y",

@@ -533,13 +533,8 @@ if ($arParams['USE_PRODUCT_QUANTITY'] == 'Y')
 	"madsoft:pricereduction",
 	"",
 	Array(
-	'HBLOCK_ID' => 3,
-	'PRODUCT_ID' =>$arResult['ID'],
-	'PRICE' => '77',//$arItemIDs['PRICE']
-	//'SKU_PROPERTY_ID' => $arResult['ID'],
-	'BUTTON_ID' => 444,//$arItemIDs['SUBSCRIBE_LINK'] . "1",
 	'BUTTON_CLASS' => 'bx_big bx_bt_button',
-	'DEFAULT_DISPLAY' => 1,//$canBuy
+	'DEFAULT_DISPLAY' => $canBuy
 	),
 	false
 	);

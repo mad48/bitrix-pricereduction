@@ -4,6 +4,7 @@ if (file_exists($handler_file = $_SERVER["DOCUMENT_ROOT"] . "/local/modules/mads
     require_once($handler_file);
 
 
+/*
 use \Bitrix\Main\Loader;
 
 // работает
@@ -13,7 +14,11 @@ $eventManager->addEventHandler(
     'catalog',
     'OnPriceUpdate',
     ['\MadSoft\PriceReduction\Lib\Handler', 'onPriceUpdate']
-);
+);*/
+
+
+
+
 
 
 

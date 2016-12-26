@@ -29,8 +29,8 @@ Asset::getInstance()->addCss($this->GetFolder() . '/fancybox.css');
 </script>
 
 <p id="pricereductionbtn">
-    <a class="modalbox bx_big bx_bt_button"
-       href="#inline"><?= Loc::getMessage('CPST_SUBSCRIBE_BUTTON_NAME') ?></a>
+    <a class="modalbox <?= $arResult['BUTTON_CLASS'] ?>"
+       href="#inline"><?= Loc::getMessage('PRICE_REDUCTION_SUBSCRIBE_BUTTON_NAME') ?></a>
 </p>
 
 <!-- hidden inline form -->
@@ -47,10 +47,7 @@ Asset::getInstance()->addCss($this->GetFolder() . '/fancybox.css');
         <?= bitrix_sessid_post() ?>
         <input type="email" id="email" name="email" class="txt"
                value="<?= htmlspecialcharsbx($arResult['PRICE_REDUCTION_EMAIL']) ?>">
-        <input type="hidden" id="productid" name="productid" class="txt"
-               value="">
-
-        <!--               <input type="text" id="skuid" name="skuid" class="txt"  value="<? /*= htmlspecialcharsbx($arResult['SKU_PROPERTY_ID']) */ ?>">-->
+        <input type="hidden" id="productid" name="productid" class="txt" value="">
 
         <br>
 

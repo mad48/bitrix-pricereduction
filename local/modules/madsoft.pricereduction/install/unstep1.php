@@ -8,10 +8,10 @@ Loc::loadMessages(__FILE__);
 
 ?>
 
-<form action="<?= $APPLICATION->getCurPage() ?>">
+<form action="<?=$APPLICATION->getCurPage(); ?>">
     <?= bitrix_sessid_post() ?>
     <input type="hidden" name="lang" value="<?= LANGUAGE_ID ?>"/>
-    <input type="hidden" name="id" value="price.reduction"/>
+    <input type="hidden" name="id" value="madsoft.pricereduction"/>
     <input type="hidden" name="uninstall" value="Y"/>
     <input type="hidden" name="step" value="2"/>
 
@@ -19,7 +19,7 @@ Loc::loadMessages(__FILE__);
     <p><?= Loc::getMessage('MOD_UNINST_SAVE') ?></p>
 
     <p><input type="checkbox" name="savedata" value="Y" checked="checked"/>
-        <label for="savedata"><?= Loc::getMessage('MODULE_UNINSTALL_SAVE_USERDATA') ?></label>
+        <label for="savedata"><?= Loc::getMessage('MOD_UNINST_SAVE_TABLES') ?></label>
     </p>
 
     <input type="submit" name="" value="<?= Loc::getMessage('MOD_UNINST_DEL') ?>"/>

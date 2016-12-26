@@ -25,86 +25,51 @@ class Handler
         return self::$instance;
     }
 
-    public static function beforeDelete($Id)
-    {
-        $handler = self::getInstance();
-        $handler->doSomething();
-        $handler->doSomethingElse();
-
-        return $Id;
-    }
-
-
-    protected function doSomething()
-    {
-        //do something
-    }
-
-    protected function doSomethingElse()
-    {
-        //do something else
-    }
-
-    public static function doSometh()
-    {
-        echo "doSometh";
-        //do something else
-    }
-
+    /**
+     * Обработчик изменения цены продукта
+     * 
+     * @param $PRICE_ID
+     * @param $arFields
+     */
     public static function onPriceUpdate($PRICE_ID, $arFields)
     {
-        //echo "Событие beforePriceUpdate";
-
         \CModule::IncludeModule("catalog");
 
-        $product_id = $arFields['PRODUCT_ID'];
         $new_price = $arFields['PRICE'];
 
-        $old_price = \CPrice::GetList(
-            [],
-            [
-                "ID" => $PRICE_ID
-            ]
-        )->Fetch();
+        $product_id = $arFields['PRODUCT_ID'];
 
-        //\Bitrix\Main\Diag\Debug::writeToFile(array('arFields' => $arFields), "", "mail_send_params.log");
+        $product_properties = \CCatalogProduct::getList([
+            'select' => array('ID', 'ELEMENT_NAME'),
+            'filter' => array('ID' => $product_id),
+            'limit' => 1
+        ])->fetch();
 
-        // если цена снизилась
-        if ($new_price < $old_price['PRICE']) {
+        /*echo "product:<pre>";
+        print_r($product_properties);
+        echo "</pre>";*/
 
-            $hlblock_id = \Bitrix\Main\Config\Option::get("mad", "hblock_id");
+        $hlblock_id = \Bitrix\Main\Config\Option::get("mad", "hblock_id");
 
-            $hldata = \Bitrix\Highloadblock\HighloadBlockTable::getById($hlblock_id)->fetch();
-            $hlentity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hldata);
-            $hlDataClass = $hlentity->getDataClass();
+        $hldata = \Bitrix\Highloadblock\HighloadBlockTable::getById($hlblock_id)->fetch();
+        $hlentity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hldata);
+        $hlDataClass = $hlentity->getDataClass();
 
-            $result = $hlDataClass::getList([
-                'select' => array('UF_EMAIL', 'UF_PRODUCT_ID'),
-                'filter' => array('UF_PRODUCT_ID' => $product_id),
-            ]);
-
-
-            //$product = \CCatalogProduct::GetByID($product_id);
-
-            $product_properties = \CCatalogProduct::getList([
-                'select' => array('ID', 'ELEMENT_NAME'),
-                'filter' => array('ID' => $product_id),
-                'limit' => 1
-            ])->fetch();
-
-            /*echo "product:<pre>";
-            print_r($product_properties);
-            echo "</pre>";*/
-
-            //  if (self::trySendEmail()) {//}
+        $subscribers = $hlDataClass::getList([
+            'select' => array('UF_EMAIL', 'UF_PRODUCT_ID', 'UF_PRICE'),
+            'filter' => array('UF_PRODUCT_ID' => $product_id),
+        ]);
 
 
-            while ($res = $result->fetch()) {
+        while ($subscriber = $subscribers->fetch()) {
+
+            // если цена снизилась
+            if ($new_price < $subscriber['UF_PRICE']) {
 
                 $params = [
                     "new_price" => $new_price,
-                    "email" => $res['UF_EMAIL'],
-                    "product_id" => $res['UF_PRODUCT_ID'],
+                    "email" => $subscriber['UF_EMAIL'],
+                    "product_id" => $subscriber['UF_PRODUCT_ID'],
                     "product_name" => $product_properties['ELEMENT_NAME']
                 ];
 
@@ -112,12 +77,9 @@ class Handler
                 print_r($params);
                 echo "</pre>";*/
 
-
-                //\Bitrix\Main\Diag\Debug::writeToFile(array('mail_send_params' => $param), "", "mail_send_params.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile(array('mail_send_params' => $params), "", "mail_send_params.log");
                 self::sendEmail($params);
             }
-
-
         }
 
 
@@ -127,6 +89,8 @@ class Handler
     function sendEmail($params)
     {
 
+        //  if (self::trySendEmail()) {//}
+        
         $event = new \CEvent;
         $mail_event_name = 'PRICE_REDUCTION';
 
@@ -137,8 +101,11 @@ class Handler
             "EMAIL" => $params['email']
         ];
 
+        //\Bitrix\Main\Diag\Debug::writeToFile(array('sendEmail' => $mail_send_params, "SITE_ID" => SITE_ID), "", "sendEmail.log");
         // select * from b_event  order by date_insert desc
-        $mail_send_id = $event->Send($mail_event_name, SITE_ID, $mail_send_params, "N");
+
+        $mail_send_id = $event->Send($mail_event_name, 's1', $mail_send_params, "N");
+
 
         /*echo "<pre>";
         print_r($mail_send_id);
@@ -157,51 +124,3 @@ class Handler
         }
     }
 }
-
-
-
-
-//use \Bitrix\Highloadblock\HighloadBlockTable;
-//use \Bitrix\Main\Config\Option;
-//use \Bitrix\Main\Mail\Event as MailEvent;
-//use \Bitrix\Main\Event;
-
-//CModule::IncludeModule('highloadblock');
-
-
-
-/*
-                                              $PRICE_ID = 1;
-                                              $arFields = array
-                                              (
-                                                  "EXTRA_ID" => "",
-                                                  "PRODUCT_ID" => 42,
-                                                  "CATALOG_GROUP_ID" => 1,
-                                                  "PRICE" => 2002,
-                                                  "CURRENCY" => "RUB",
-                                                  "QUANTITY_FROM" => "",
-                                                  "QUANTITY_TO" => "",
-                                                  "RECALC> "",
-                                                  "PRICE_SCALE" => 2002
-                                              );
-                      /*
-
-                                         \MadSoft\PriceReduction::beforePriceUpdate($PRICE_ID, $arFields);*/
-
-// Создание события
-// $event = new Event("mymodule", "OnCatalogElementsImport", array('test_string'));
-
-// Вызов события
-// $event->send();
-
-// Обработка результатов вызова
-/*            if ($event->getResults()) {
-                echo 'Параметры, возвращенные из обработчика';
-
-
-                foreach ($event->getResults() as $eventResult) {
-                    echo "<pre style=\"display:block;\">";
-                    print_r($eventResult->getParameters());
-                    echo "</pre>";
-                }
-            }*/
