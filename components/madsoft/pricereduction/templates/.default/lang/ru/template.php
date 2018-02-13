@@ -17,7 +17,7 @@ $MESS["CPST_POPUP_SUBSCRIBED_TEXT"] = "Список товаров на кото
 
 
 $MESS["PRICE_REDUCTION_SUBSCRIBE_BUTTON_NAME"] = "Подписаться на снижение цены";
-$MESS["PRICE_REDUCTION_TITLE"] = "Подписка на снижение цены товара";
+$MESS["PRICE_REDUCTION_TITLE"] = "Подписаться на снижение цены";
 $MESS["PRICE_REDUCTION_ALREADY_SUBSCRIBE"] = "Вы уже подписаны на снижение цены этого товара";
 $MESS["PRICE_REDUCTION_SUCCESS_SUBSCRIBE"] = "Вы подписаны на снижение цены";
 

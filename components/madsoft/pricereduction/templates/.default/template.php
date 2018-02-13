@@ -34,25 +34,25 @@ Asset::getInstance()->addCss($this->GetFolder() . '/fancybox.css');
 </p>
 
 <!-- hidden inline form -->
-<div id="inline" style="display: none" class="popup-window popup-window-content-white popup-window-with-titlebar"
+<div id="inline" style="display: none; padding: 15px" class="popup-window popup-window-content-white popup-window-with-titlebar"
      style="z-index: 1100; position: absolute; display: block; ">
 
     <div class="popup-window-titlebar">
-        <span class="popup-window-titlebar-text"><?= Loc::getMessage('PRICE_REDUCTION_TITLE') ?></span>
+        <h4 class=""><?= Loc::getMessage('PRICE_REDUCTION_TITLE') ?></h4>
     </div>
 
-
-    <form id="contact" name="contact" action="#" method="post">
-        <label for="email">Ваш E-mail </label>
+    <form class="form-inline" id="contact" name="contact" action="#" method="post">
         <?= bitrix_sessid_post() ?>
-        <input type="email" id="email" name="email" class="txt"
-               value="<?= htmlspecialcharsbx($arResult['PRICE_REDUCTION_EMAIL']) ?>">
-        <input type="hidden" id="productid" name="productid" class="txt" value="">
 
-        <br>
+        <div class="form-group">
+            <label for="email">E-mail: </label>
+            <input type="email" id="email" name="email" class="form-control" style="width: 200px"
+                   value="<?= htmlspecialcharsbx($arResult['PRICE_REDUCTION_EMAIL']) ?>" />
+        </div>
+        <input type="hidden" id="productid" name="productid" class="txt" value="" />
 
         <div class="popup-window-buttons">
-            <span class="btn btn-primary" style="margin-bottom: 0px; border-bottom: 0px none transparent;">
+            <span class="btn  btn-success" style="margin-bottom: 0px; border-bottom: 0px none transparent;">
                 <span id="send">Подписаться</span>
             </span>
         </div>
